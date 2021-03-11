@@ -1,0 +1,3 @@
+<resources>
+    <public name="onboarding_lib_app_name" type="string"/>
+</resources>

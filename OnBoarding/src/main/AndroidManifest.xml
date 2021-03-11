@@ -2,15 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.co.santander.santanderuk.onboarding">
 
-    <application android:name=".OnboardingApp">
-        <activity android:name="uk.co.santander.santanderuk.ui.OnboardingWebActivity">
+    <application>
+        <activity android:name=".ui.OnboardingWebviewActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-
+        <provider
+            android:authorities=".OnboardingInitProvider"
+            android:name="uk.co.santander.santanderuk.onboarding.OnboardingInitProvider"/>
     </application>
-
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
