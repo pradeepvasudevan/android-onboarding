@@ -1,4 +1,4 @@
-package uk.co.santander.santanderuk.onboarding.utils;
+package uk.co.santander.santanderuk.onboarding.base;
 
 import android.annotation.TargetApi;
 import android.content.Context;

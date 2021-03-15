@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <color name="pri_one">#ec0000</color>
+
+    <color name="san_red_progress_fg">@color/pri_one</color>
+    <color name="san_red_progress_bg">#44767676</color>
+    <color name="san_red_progress_viewgroup">#CCFFFFFF</color>
 </resources>

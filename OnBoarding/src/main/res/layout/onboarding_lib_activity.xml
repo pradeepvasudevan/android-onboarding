@@ -5,8 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.OnboardingWebviewActivity">
-    <uk.co.santander.santanderuk.onboarding.utils.SanWebView
+    <uk.co.santander.santanderuk.onboarding.base.SanWebView
         android:id="@+id/onboarding_webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/app_progress_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/san_red_progress_viewgroup"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <ProgressBar
+            android:id="@+id/app_progress"
+            style="@style/SanProgressBarLight"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/pri_one"
+            android:visibility="gone" />
+    </FrameLayout>
 </RelativeLayout>
