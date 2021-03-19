@@ -28,7 +28,7 @@ class OnboardingWebviewPresenter(
     }
 
     fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
-        TODO("Not yet implemented")
+        return false
     }
 
     fun onPageLoadError(errorCode: Int) {
@@ -36,14 +36,14 @@ class OnboardingWebviewPresenter(
     }
 
     fun useExistingWebViewWindow(webView: WebView, url: String) {
-        TODO("Not yet implemented")
+
     }
 
     fun handleExternalLink(url: String, mimeType: String) {
-        TODO("Not yet implemented")
+
     }
 
     fun onSslError(error: SslError) {
-        TODO("Not yet implemented")
+
     }
 }

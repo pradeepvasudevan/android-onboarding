@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="uk.co.santander.santanderuk.onboarding">
 
-    <application>
+    <application
+        android:networkSecurityConfig="@xml/network_security_config"
+        tools:replace="allowBackup"
+        android:allowBackup="true">
         <activity android:name=".ui.OnboardingWebviewActivity"
             android:launchMode="singleTask">
             <intent-filter>

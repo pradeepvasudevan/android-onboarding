@@ -6,8 +6,8 @@ buildscript {
         targetSdk = 30
         compileSdk = 30
 
-        versionMajor = 4
-        versionMinor = 15
+        versionMajor = 1
+        versionMinor = 1
         versionPatch = 0
 
         buildNumber = System.getenv("BUILD_NUMBER") as Integer ?: 0
@@ -20,20 +20,54 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url 'https://nexus.almuk.santanderuk.corp/repository/firefly-mobility/android/ddv-test'
+        }
+
+        maven {
+            url "s3://maven-mobile-repo/releases"
+            credentials(AwsCredentials) {
+                accessKey "AKIAT35UXA7V4CRNFN44"
+                secretKey "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"
+            }
+        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
+        classpath "com.idscan.ieos:key-holder:1.0"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
     }
+
 }
+def keyHolder = com.idscan.mjcs.key.holder.MJCSKeyHolder.getInstance("nae1V9ocsE8=")
 
 allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url 'https://nexus.almuk.santanderuk.corp/repository/firefly-mobility/android/ddv-test'
+        }
+
+        maven {
+            url "s3://maven-mobile-repo/releases"
+            credentials(AwsCredentials) {
+                accessKey "AKIAT35UXA7V4CRNFN44"
+                secretKey "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"
+            }
+        }
+
+        maven {
+            url keyHolder.getInnovalorMavenUrl()
+            credentials(AwsCredentials) {
+                accessKey keyHolder.getAccessKey()
+                secretKey keyHolder.getSecretKey()
+            }
+        }
+        maven { url 'https://raw.githubusercontent.com/iProov/android/master/maven/' }
     }
 }
 
