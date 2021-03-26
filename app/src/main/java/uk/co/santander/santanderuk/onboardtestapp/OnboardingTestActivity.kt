@@ -12,6 +12,6 @@ class OnboardingTestActivity : AppCompatActivity() {
     }
 
     fun onStartOnboardingLib(view: View) {
-        Onboarding.start("https://app.sandev.gb.astodev.io/auth/register")
+        Onboarding.start("https://www.santander.co.uk")
     }
 }
