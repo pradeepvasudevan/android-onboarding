@@ -15,7 +15,7 @@
     </base-config>
 
     <domain-config>
-        <domain includeSubdomains="true">app.sandev.gb.astodev.io</domain>
+        <domain includeSubdomains="true">astodev.io</domain>
         <trust-anchors>
             <certificates src="@raw/app_sandev_gb_astodev_io" />
         </trust-anchors>
