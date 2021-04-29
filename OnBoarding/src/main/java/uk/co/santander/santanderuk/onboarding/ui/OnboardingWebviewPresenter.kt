@@ -52,6 +52,7 @@ class OnboardingWebviewPresenter(
 
     @JavascriptInterface
     fun postMessage(message: String) {
-        Log.i(tag, "test message from web $message")
+        Log.i(tag, "message from web: $message")
+//        Ddv.start(view as Activity, "109442d6-996f-489c-9f96-eb3366a14ce6")
     }
 }
