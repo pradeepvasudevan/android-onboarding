@@ -1,6 +1,8 @@
 package uk.co.santander.santanderuk.onboarding.ui
 
 import android.net.http.SslError
+import android.util.Log
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import uk.co.santander.santanderuk.onboarding.base.SanBasePresenter
 
@@ -8,6 +10,7 @@ class OnboardingWebviewPresenter(
     override val view: OnboardingWebviewView,
     private val webViewUrl: String?
 ) : SanBasePresenter() {
+    private val tag: String = this@OnboardingWebviewPresenter.javaClass.simpleName
 
     override fun start() {
         webViewUrl?.let {
@@ -45,5 +48,10 @@ class OnboardingWebviewPresenter(
 
     fun onSslError(error: SslError) {
 
+    }
+
+    @JavascriptInterface
+    fun postMessage(message: String) {
+        Log.i(tag, "test message from web $message")
     }
 }
