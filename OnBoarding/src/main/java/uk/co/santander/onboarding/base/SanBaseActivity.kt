@@ -1,11 +1,11 @@
-package uk.co.santander.santanderuk.onboarding.base
+package uk.co.santander.onboarding.base
 
 import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import uk.co.santander.santanderuk.onboarding.BuildConfig
+import uk.co.santander.onboarding.BuildConfig
 
 abstract class SanBaseActivity<P: SanBasePresenter> : AppCompatActivity(), SanBaseView{
     lateinit var presenter: P

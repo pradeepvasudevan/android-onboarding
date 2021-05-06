@@ -1,10 +1,10 @@
-package uk.co.santander.santanderuk.onboarding.ui
+package uk.co.santander.onboarding.ui
 
 import android.net.http.SslError
 import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import uk.co.santander.santanderuk.onboarding.base.SanBasePresenter
+import uk.co.santander.onboarding.base.SanBasePresenter
 
 class OnboardingWebviewPresenter(
     override val view: OnboardingWebviewView,

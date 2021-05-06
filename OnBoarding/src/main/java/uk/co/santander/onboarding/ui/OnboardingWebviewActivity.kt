@@ -1,4 +1,4 @@
-package uk.co.santander.santanderuk.onboarding.ui
+package uk.co.santander.onboarding.ui
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
@@ -13,10 +13,10 @@ import android.view.ViewGroup
 import android.webkit.*
 import android.widget.ProgressBar
 import kotlinx.android.synthetic.main.onboarding_lib_activity.*
-import uk.co.santander.santanderuk.onboarding.BuildConfig
-import uk.co.santander.santanderuk.onboarding.R
-import uk.co.santander.santanderuk.onboarding.base.SanBaseActivity
-import uk.co.santander.santanderuk.onboarding.base.SanWebView
+import uk.co.santander.onboarding.BuildConfig
+import uk.co.santander.onboarding.R
+import uk.co.santander.onboarding.base.SanBaseActivity
+import uk.co.santander.onboarding.base.SanWebView
 
 class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(), OnboardingWebviewView {
     lateinit var webContentView: SanWebView
@@ -121,20 +121,21 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
             }
         }
 
-        val webSettings = webContentView.settings
-        webSettings.javaScriptEnabled = true
-        webSettings.setAppCacheEnabled(false)
-        webSettings.allowContentAccess = false
-        webSettings.allowFileAccess = false
-        webSettings.allowFileAccessFromFileURLs = false
-        webSettings.allowUniversalAccessFromFileURLs = false
-        webSettings.cacheMode = WebSettings.LOAD_NO_CACHE
-        webSettings.setSupportZoom(true)
-        webSettings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-        webSettings.setSupportMultipleWindows(true)
-        webSettings.domStorageEnabled = true
-        webSettings.loadWithOverviewMode = true
-        webSettings.useWideViewPort = true
+        webContentView.settings.run {
+            javaScriptEnabled = true
+            setAppCacheEnabled(false)
+            allowContentAccess = false
+            allowFileAccess = false
+            allowFileAccessFromFileURLs = false
+            allowUniversalAccessFromFileURLs = false
+            cacheMode = WebSettings.LOAD_NO_CACHE
+            setSupportZoom(true)
+            mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+            setSupportMultipleWindows(true)
+            domStorageEnabled = true
+            loadWithOverviewMode = true
+            useWideViewPort = true
+        }
         webContentView.addJavascriptInterface(presenter, OnboardingWebviewView.JS_INTERFACE_NAME)
         val cookieManager = CookieManager.getInstance()
         cookieManager.setAcceptCookie(true)

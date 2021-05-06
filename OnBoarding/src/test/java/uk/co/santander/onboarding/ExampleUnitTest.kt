@@ -1,4 +1,4 @@
-package uk.co.santander.santanderuk.onboarding
+package uk.co.santander.onboarding
 
 import org.junit.Test
 

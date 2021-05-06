@@ -1,4 +1,4 @@
-package uk.co.santander.santanderuk.onboarding.base
+package uk.co.santander.onboarding.base
 
 import android.content.Context
 

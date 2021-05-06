@@ -14,7 +14,7 @@ buildscript {
         versionCode = ((versionMajor * 100 + versionMinor) * 100 + versionPatch) * 10000 + buildNumber
         versionName = "$versionMajor.$versionMinor.$versionPatch"
 
-        PUBLISH_GROUP_ID = 'uk.co.santander.santanderuk'
+        PUBLISH_GROUP_ID = 'uk.co.santander'
         PUBLISH_VERSION = versionName
 
         buildDate = new Date().format('dd/MM/yyyy')

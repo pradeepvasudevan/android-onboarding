@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.OnboardingWebviewActivity">
-    <uk.co.santander.santanderuk.onboarding.base.SanWebView
+    <uk.co.santander.onboarding.base.SanWebView
         android:id="@+id/onboarding_webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

@@ -1,10 +1,10 @@
-package uk.co.santander.santanderuk.onboarding
+package uk.co.santander.onboarding
 
 import android.content.Context
 import android.content.Intent
 import org.jetbrains.annotations.NotNull
-import uk.co.santander.santanderuk.onboarding.ui.OnboardingWebviewView
-import uk.co.santander.santanderuk.onboarding.ui.OnboardingWebviewActivity
+import uk.co.santander.onboarding.ui.OnboardingWebviewView
+import uk.co.santander.onboarding.ui.OnboardingWebviewActivity
 
 class Onboarding {
     companion object {

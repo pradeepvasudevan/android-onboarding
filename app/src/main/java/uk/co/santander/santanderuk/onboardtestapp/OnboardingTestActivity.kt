@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import uk.co.santander.santanderuk.onboarding.Onboarding
+import uk.co.santander.onboarding.Onboarding
 
 class OnboardingTestActivity : AppCompatActivity() {
     var magicLinkStarted = false

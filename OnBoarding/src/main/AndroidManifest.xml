@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="uk.co.santander.santanderuk.onboarding">
+    package="uk.co.santander.onboarding">
 
     <application
         tools:replace="allowBackup"
@@ -14,8 +14,8 @@
             </intent-filter>
         </activity>
         <provider
-            android:authorities=".OnboardingInitProvider"
-            android:name="uk.co.santander.santanderuk.onboarding.OnboardingInitProvider"/>
+            android:authorities="${applicationId}.OnboardingInitProvider"
+            android:name="uk.co.santander.onboarding.OnboardingInitProvider"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

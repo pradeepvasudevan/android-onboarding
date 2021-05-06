@@ -49,7 +49,12 @@ afterEvaluate {
         repositories {
             maven {
                 name = 'nexus'
-                url = "file://${buildDir}/repo"
+                //url = "file://${buildDir}/repo"
+                url "https://nexus.almuk.santanderuk.corp/repository/firefly-mobility/android/ddv-test"
+                credentials {
+                    username "$NEXUS_USERNAME"
+                    password "$NEXUS_PASSWORD"
+                }
             }
         }
     }

@@ -1,6 +1,6 @@
-package uk.co.santander.santanderuk.onboarding.ui
+package uk.co.santander.onboarding.ui
 
-import uk.co.santander.santanderuk.onboarding.base.SanBaseView
+import uk.co.santander.onboarding.base.SanBaseView
 
 interface OnboardingWebviewView : SanBaseView {
     fun showUrl(url: String)
