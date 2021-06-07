@@ -2,6 +2,7 @@ package uk.co.santander.onboarding.ui
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.app.AlertDialog
 import android.graphics.Bitmap
 import android.net.http.SslError
 import android.os.Build
@@ -18,7 +19,8 @@ import uk.co.santander.onboarding.R
 import uk.co.santander.onboarding.base.SanBaseActivity
 import uk.co.santander.onboarding.base.SanWebView
 
-class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(), OnboardingWebviewView {
+class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
+    OnboardingWebviewView {
     lateinit var webContentView: SanWebView
     lateinit var progressViewGroup: ViewGroup
     lateinit var progressView: ProgressBar
@@ -60,22 +62,34 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
             }
 
             @TargetApi(Build.VERSION_CODES.N)
-            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+            override fun shouldOverrideUrlLoading(
+                view: WebView,
+                request: WebResourceRequest
+            ): Boolean {
                 return shouldOverrideUrlLoading(view, request.url.toString())
             }
 
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                Log.d(tag,"shouldOverrideUrlLoading $url")
+                Log.d(tag, "shouldOverrideUrlLoading $url")
                 return presenter.shouldOverrideUrlLoading(view, url)
             }
 
             @TargetApi(Build.VERSION_CODES.M)
-            override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+            override fun onReceivedError(
+                view: WebView,
+                request: WebResourceRequest,
+                error: WebResourceError
+            ) {
                 Log.d(tag, "onReceivedError: ${request.url}")
                 if (request.isForMainFrame) {
                     Log.d(tag, "onReceivedError -- for mainframe: ${request.url}")
                     // Redirect to deprecated method, so it can be used in all SDK versions
-                    onReceivedError(view, error.errorCode, error.description.toString(), request.url.toString())
+                    onReceivedError(
+                        view,
+                        error.errorCode,
+                        error.description.toString(),
+                        request.url.toString()
+                    )
                 }
                 var errorMessage: CharSequence = ""
                 when (error.errorCode) {
@@ -87,7 +101,7 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
                     ERROR_IO -> errorMessage = "connection io failed"
                     ERROR_UNKNOWN -> errorMessage = "connection error unknown"
                 }
-                Log.w(tag,"onReceivedError: $errorMessage")
+                Log.w(tag, "onReceivedError: $errorMessage")
             }
 
             @TargetApi(Build.VERSION_CODES.M)
@@ -99,16 +113,33 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
                 Log.w(tag, "onReceivedHttpError: ${errorResponse.reasonPhrase}")
                 // Redirect to deprecated method, so it can be used in all SDK versions
                 if (request.isForMainFrame) {
-                    onReceivedError(view, ERROR_UNKNOWN, errorResponse.reasonPhrase + " " + errorResponse.statusCode, request.url.toString())
+                    onReceivedError(
+                        view,
+                        ERROR_UNKNOWN,
+                        errorResponse.reasonPhrase + " " + errorResponse.statusCode,
+                        request.url.toString()
+                    )
                 }
             }
 
-            override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
-                Log.e(tag, "onReceivedError - Failing url: $failingUrl Error: $errorCode $description")
+            override fun onReceivedError(
+                view: WebView,
+                errorCode: Int,
+                description: String,
+                failingUrl: String
+            ) {
+                Log.e(
+                    tag,
+                    "onReceivedError - Failing url: $failingUrl Error: $errorCode $description"
+                )
                 presenter.onPageLoadError(errorCode)
             }
 
-            override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
+            override fun onReceivedSslError(
+                view: WebView,
+                handler: SslErrorHandler,
+                error: SslError
+            ) {
                 Log.w(tag, "onReceivedSslError: $error")
 
                 if (BuildConfig.IGNORE_SSL_ERRORS_IN_WEBVIEW) {
@@ -140,6 +171,9 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
         val cookieManager = CookieManager.getInstance()
         cookieManager.setAcceptCookie(true)
         cookieManager.setAcceptThirdPartyCookies(webContentView, true)
+        if (BuildConfig.DEBUG) {
+            WebView.setWebContentsDebuggingEnabled(true)
+        }
     }
 
     private fun setupChromeClient() {
@@ -148,7 +182,12 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
                 // no progress bar
             }
 
-            override fun onCreateWindow(view: WebView, isDialog: Boolean, isUserGesture: Boolean, resultMsg: Message): Boolean {
+            override fun onCreateWindow(
+                view: WebView,
+                isDialog: Boolean,
+                isUserGesture: Boolean,
+                resultMsg: Message
+            ): Boolean {
                 val result = view.hitTestResult
                 val url = result?.extra
                 return if (url != null) {
@@ -173,7 +212,10 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
         val targetWebView = WebView(getContext())
         targetWebView.webViewClient = object : WebViewClient() {
             @TargetApi(Build.VERSION_CODES.N)
-            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+            override fun shouldOverrideUrlLoading(
+                view: WebView,
+                request: WebResourceRequest
+            ): Boolean {
                 return shouldOverrideUrlLoading(view, request.url.toString())
             }
 
@@ -192,13 +234,62 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
 
     private fun setupDownloadListener() {
         webContentView.setDownloadListener { url: String, _: String, contentDisposition: String, mimeType: String, _: Long ->
-            Log.w(tag, "onDownloadStart url: $url mimeType: $mimeType contentDisposition: $contentDisposition")
+            Log.w(
+                tag,
+                "onDownloadStart url: $url mimeType: $mimeType contentDisposition: $contentDisposition"
+            )
             presenter.handleExternalLink(url, mimeType)
         }
     }
 
     override fun showUrl(url: String) {
         webContentView.loadUrl(url)
+    }
+
+    override fun showWebContent() {
+        setVisibility(View.VISIBLE, webContentView)
+    }
+
+    override fun hideWebContent() {
+        setVisibility(View.GONE, webContentView)
+    }
+
+    override fun showAlertDiaog(
+        id: Int,
+        title: String,
+        message: String,
+        alertButtons: List<AlertButton>
+    ) {
+        val alert = AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+        for (button in alertButtons) {
+            if (button.type == AlertButton.TYPE.POSITIVE) {
+                alert.setPositiveButton(button.text) { _, _ ->
+                    presenter.onUserAlertAction(
+                        id,
+                        button.action
+                    )
+                }
+            }
+            if (button.type == AlertButton.TYPE.NEGATIVE) {
+                alert.setNegativeButton(button.text) { _, _ ->
+                    presenter.onUserAlertAction(
+                        id,
+                        button.action
+                    )
+                }
+            }
+            if (button.type == AlertButton.TYPE.NEUTRAL) {
+                alert.setNeutralButton(button.text) { _, _ ->
+                    presenter.onUserAlertAction(
+                        id,
+                        button.action
+                    )
+                }
+            }
+        }
+        alert.create().show()
     }
 
     override fun startProgress() {

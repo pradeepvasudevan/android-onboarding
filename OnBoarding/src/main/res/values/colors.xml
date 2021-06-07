@@ -10,4 +10,5 @@
     <color name="san_red_progress_fg">@color/pri_one</color>
     <color name="san_red_progress_bg">#44767676</color>
     <color name="san_red_progress_viewgroup">#CCFFFFFF</color>
+    <color name="color_white">#FFF</color>
 </resources>

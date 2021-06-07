@@ -23,9 +23,9 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven {
-            url 'https://nexus.almuk.santanderuk.corp/repository/firefly-mobility/android/ddv-test'
-        }
+//        maven {
+//            url 'https://nexus.almuk.santanderuk.corp/repository/firefly-mobility/android/ddv-test'
+//        }
 
         maven {
             url 'https://nexus.almuk.santanderuk.corp/repository/maven-releases'
@@ -46,9 +46,9 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven {
-            url 'https://nexus.almuk.santanderuk.corp/repository/firefly-mobility/android/ddv-test'
-        }
+//        maven {
+//            url 'https://nexus.almuk.santanderuk.corp/repository/firefly-mobility/android/ddv-test'
+//        }
 
         maven {
             url 'https://nexus.almuk.santanderuk.corp/repository/maven-releases/'

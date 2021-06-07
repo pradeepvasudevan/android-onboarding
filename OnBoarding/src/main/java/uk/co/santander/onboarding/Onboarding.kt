@@ -15,8 +15,29 @@ class Onboarding {
             OnboardingInitProvider.appContext.startActivity(intent)
         }
 
-        fun start(context: Context, url: String) {
-            // tbd
+        fun init(clientId: String, clientSecret: String) {
+            this.clientId = clientId
+            this.clientSecret = clientSecret
         }
+
+        fun setDynatraceParams(sourceSystemId: String? = null,
+                               userId: String? = null,
+                               dynatraceAppId: String? = null,
+                               dynatraceBeaconUrl: String? = null,
+                               dynatraceUserOptIn: Boolean = false) {
+            this.sourceSystemId = sourceSystemId
+            this.userId = userId
+            this.dynatraceAppId = dynatraceAppId
+            this.dynatraceBeaconUrl = dynatraceBeaconUrl
+            this.dynatraceUserOptIn = dynatraceUserOptIn
+        }
+
+        lateinit var clientId: String
+        lateinit var clientSecret: String
+        var sourceSystemId: String? = null
+        var userId: String? = null
+        var dynatraceAppId: String? = null
+        var dynatraceBeaconUrl: String? = null
+        var dynatraceUserOptIn: Boolean = false
     }
 }

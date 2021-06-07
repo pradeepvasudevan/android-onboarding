@@ -26,7 +26,7 @@ abstract class SanBaseActivity<P: SanBasePresenter> : AppCompatActivity(), SanBa
     }
 
     override fun getContext(): Context {
-        return this.getContext()
+        return this
     }
 
     override fun close() {
