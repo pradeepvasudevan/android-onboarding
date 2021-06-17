@@ -28,7 +28,7 @@ abstract class SanBasePresenter {
         stop()
     }
 
-    protected fun stop() {
+    protected open fun stop() {
     }
 
     fun onPause() {

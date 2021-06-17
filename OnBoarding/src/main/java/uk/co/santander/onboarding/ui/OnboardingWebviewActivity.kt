@@ -171,7 +171,7 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
         val cookieManager = CookieManager.getInstance()
         cookieManager.setAcceptCookie(true)
         cookieManager.setAcceptThirdPartyCookies(webContentView, true)
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG || BuildConfig.DEBUG_WEBVIEW_WINDOW) {
             WebView.setWebContentsDebuggingEnabled(true)
         }
     }
