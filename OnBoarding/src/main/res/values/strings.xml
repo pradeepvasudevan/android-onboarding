@@ -1,6 +1,7 @@
 <resources>
     <string name="onboarding_lib_app_name">Onboarding</string>
     <string name="onboarding_lib_std_error_message">We can\'t get to that page at the moment.</string>
+    <string name="onboarding_lib_std_idv_error_message">Something went wrong.</string>
     <string name="onboarding_lib_we_re_sorry">We\'re sorry</string>
     <string name="onboarding_lib_button_ok">OK</string>
     <string name="onboarding_lib_button_cancel">Cancel</string>

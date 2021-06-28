@@ -26,6 +26,6 @@ class OnboardingTestActivity : AppCompatActivity() {
     fun onStartOnboardingLib(view: View) {
         Onboarding.init(clientId = "75a7aa14-421d-4973-8e92-173309a12994",
             clientSecret = "X0oN6tP4uQ5pA5oR6vT1dU6yW4jD2tU6nD2pI1dL5nC6aD7mQ8")
-        Onboarding.start("https://app.sandev.gb.astodev.io/auth/register")
+        Onboarding.start("https://app-p.dev.sirius.tlzproject.com/")
     }
 }

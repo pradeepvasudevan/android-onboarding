@@ -6,6 +6,7 @@ import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import uk.co.santander.ddv.Ddv
+import uk.co.santander.ddv.DdvListener
 import uk.co.santander.ddv.common.utils.otherconfigs.ConsumerData
 import uk.co.santander.onboarding.Onboarding
 import uk.co.santander.onboarding.R
@@ -14,13 +15,19 @@ import uk.co.santander.onboarding.base.SanBasePresenter
 class OnboardingWebviewPresenter(
     override val view: OnboardingWebviewView,
     private val webViewUrl: String?
-) : SanBasePresenter() {
+) : SanBasePresenter(), DdvListener {
     private val tag: String = this@OnboardingWebviewPresenter.javaClass.simpleName
     private var webClientErrorCode = NO_ERROR
+
     override fun start() {
+       Ddv.registerListener(this)
         webViewUrl?.let {
             view.showUrl(it)
         }
+    }
+
+    override fun stop() {
+       Ddv.unregisterListener(this)
     }
 
     fun onPageLoadStarted(webView: WebView, url: String) {
@@ -74,39 +81,52 @@ class OnboardingWebviewPresenter(
     }
 
     fun onSslError(error: SslError) {
-
+        onPageLoadError(errorCode = error.primaryError)
     }
 
     @JavascriptInterface
-    fun postMessage(sessionToken: String) {
-        Log.i(tag, "message from web: $sessionToken")
-        if (Onboarding.clientId == null || Onboarding.clientSecret == null) {
+    fun postMessage(idvSessionId: String) {
+        Log.i(tag, "idv session id from web: $idvSessionId")
+        if (Onboarding.clientId.isNullOrEmpty()  || Onboarding.clientSecret.isNullOrEmpty()) {
             Log.i(tag, "No Client id/client secret is set")
+            showIDVError()
         } else {
             Log.i(tag, "Client id ${Onboarding.clientId}, Client secret ${Onboarding.clientSecret}")
-            val conf = ConsumerData.Config(
-                clientId = Onboarding.clientId,
-                clientSecret = Onboarding.clientSecret
-            )
-            var head: ConsumerData.Headers? = null
-            Onboarding.dynatraceAppId?.let {
-                head = ConsumerData.Headers(
-                    Onboarding.sourceSystemId,
-                    Onboarding.clientId,
-                    Onboarding.dynatraceAppId,
-                    Onboarding.dynatraceBeaconUrl,
-                    Onboarding.dynatraceUserOptIn
+            try {
+                val conf = ConsumerData.Config(
+                    clientId = Onboarding.clientId,
+                    clientSecret = Onboarding.clientSecret
                 )
+                var head: ConsumerData.Headers? = null
+                Onboarding.dynatraceAppId?.let {
+                    head = ConsumerData.Headers(
+                        Onboarding.sourceSystemId,
+                        Onboarding.clientId,
+                        Onboarding.dynatraceAppId,
+                        Onboarding.dynatraceBeaconUrl,
+                        Onboarding.dynatraceUserOptIn
+                    )
+                }
+
+                Ddv.start(
+                    context as Activity,
+                    sessionTokenId = idvSessionId,
+                    headers = head,
+                    config = conf
+                )
+            }catch (e: Exception) {
+                showIDVError()
             }
-
-            Ddv.start(
-                view as Activity,
-                headers = head,
-                sessionTokenId = sessionToken,
-                config = conf
-            )
         }
+    }
 
+    private fun showIDVError() {
+        view.showAlertDiaog(ID_PAGE_IDV_STD_ERROR,
+            context.getString(R.string.onboarding_lib_we_re_sorry),
+            context.getString(R.string.onboarding_lib_std_idv_error_message),
+            listOf(AlertButton(AlertButton.ACTION.OK,
+                AlertButton.TYPE.POSITIVE,
+                context.getString(R.string.onboarding_lib_button_ok))))
     }
 
     fun onUserAlertAction(id: Int, action: AlertButton.ACTION) {
@@ -115,12 +135,21 @@ class OnboardingWebviewPresenter(
                 webViewUrl?.let {
                     view.showUrl(it)
                 }
+            } else if (action == AlertButton.ACTION.OK) {
+                view.close()
             }
         }
     }
 
     companion object {
-        private const val NO_ERROR = 100
-        private const val ID_PAGE_LOAD_ERROR = -100
+        const val NO_ERROR = 100
+        const val ID_PAGE_LOAD_ERROR = -200
+        const val ID_PAGE_IDV_STD_ERROR = -300
+    }
+
+
+    override fun onCompleted() {
+        Log.i(tag, "ID&V completed")
+        Onboarding.onCompleteUrl?.let { view.showUrl(it) }
     }
 }

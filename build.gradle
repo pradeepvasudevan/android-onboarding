@@ -2,12 +2,14 @@
 buildscript {
     ext {
         kotlin_version = "1.3.72"
+        mockitoCore_version = "2.22.0"
+        mockk_version = "1.10.2"
         minSdk = 23
         targetSdk = 30
         compileSdk = 30
 
         versionMajor = 1
-        versionMinor = 1
+        versionMinor = 6
         versionPatch = 0
 
         buildNumber = System.getenv("BUILD_NUMBER") as Integer ?: 0
@@ -21,12 +23,8 @@ buildscript {
     }
 
     repositories {
+        mavenCentral()
         google()
-        jcenter()
-//        maven {
-//            url 'https://nexus.almuk.santanderuk.corp/repository/firefly-mobility/android/ddv-test'
-//        }
-
         maven {
             url 'https://nexus.almuk.santanderuk.corp/repository/maven-releases'
         }
@@ -34,7 +32,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.idscan.ieos:key-holder:1.0"
+        classpath "com.idscan.ieos:key-holder:1.1"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
 
@@ -44,16 +42,12 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenCentral()
         google()
-        jcenter()
-//        maven {
-//            url 'https://nexus.almuk.santanderuk.corp/repository/firefly-mobility/android/ddv-test'
-//        }
 
         maven {
-            url 'https://nexus.almuk.santanderuk.corp/repository/maven-releases/'
+            url "https://nexus.almuk.santanderuk.corp/repository/maven-releases"
         }
-
         maven {
             url 'https://raw.githubusercontent.com/iProov/android/master/maven/'
         }
