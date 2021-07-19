@@ -1,4 +1,17 @@
 <resources>
     <string name="app_name">Onboard Test App</string>
     <string name="start_onboard_lib">Start Onboarding Lib</string>
+    <string name="javascript_interface_test">Javascript Interface Test</string>
+
+    <!-- deep/app linking to the app for on-boarding process -->
+    <string name="onboard_dev_app_deep_link_host">app-p.dev.sirius.tlzproject.com</string>
+    <string name="onboard_pre_app_deep_link_host">app-p.preprod.sirius.tlzproject.com</string>
+    <string name="onboard_pro_app_deep_link_host">app-p.apply2.santander.co.uk</string>
+
+    <string name="onboard_bca_dev_app_deep_link_host">app-b.dev.sirius.tlzproject.com</string>
+    <string name="onboard_bca_pre_app_deep_link_host">app-b.preprod.sirius.tlzproject.com</string>
+    <string name="onboard_bca_pro_app_deep_link_host">app-b.apply2.santander.co.uk</string>
+
+    <string name="onboard_app_deep_link_path_prefix1">/magic-link-web/</string>
+    <string name="onboard_app_deep_link_path_prefix2">/magic-link/</string>
 </resources>

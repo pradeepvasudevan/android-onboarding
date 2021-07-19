@@ -242,6 +242,27 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
         }
     }
 
+    override fun clearWebCache() {
+        Log.d(tag, "clearing web cache")
+        webContentView.clearFormData()
+        webContentView.clearHistory()
+        webContentView.clearCache(true)
+    }
+
+    override fun clearAll() {
+        Log.d(tag, "clearing all web caches, cookies")
+        clearCookies()
+        webContentView.clearFormData()
+        webContentView.clearHistory()
+        webContentView.clearCache(true)
+    }
+
+    private fun clearCookies() {
+        val cookieManager = CookieManager.getInstance()
+        cookieManager.removeAllCookies(null)
+        cookieManager.flush()
+    }
+
     override fun showUrl(url: String) {
         webContentView.loadUrl(url)
     }

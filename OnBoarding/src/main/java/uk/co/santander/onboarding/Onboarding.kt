@@ -2,14 +2,18 @@ package uk.co.santander.onboarding
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import org.jetbrains.annotations.NotNull
 import uk.co.santander.onboarding.ui.OnboardingWebviewView
 import uk.co.santander.onboarding.ui.OnboardingWebviewActivity
+import java.net.URI
+import java.net.URL
 
 class Onboarding {
     companion object {
         fun start(@NotNull url: String) {
-            onCompleteUrl = "$url$QUERY_PARAM_IDV_COMPLETE"
+            initOnCompleteUrl(url)
             val intent = Intent(OnboardingInitProvider.appContext, OnboardingWebviewActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK;
             intent.putExtra(OnboardingWebviewView.EXTRA_WEBVIEW_URL, url)
@@ -44,6 +48,11 @@ class Onboarding {
             onCompleteUrl?.let {
                 this.onCompleteUrl = onCompleteUrl
             }
+        }
+
+        private fun initOnCompleteUrl(urlString: String) {
+            val url = URL(urlString)
+            onCompleteUrl =  "${url.protocol}://${url.authority}/$QUERY_PARAM_IDV_COMPLETE"
         }
 
         lateinit var clientId: String

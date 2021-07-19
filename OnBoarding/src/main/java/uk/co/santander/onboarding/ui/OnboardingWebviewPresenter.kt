@@ -84,39 +84,49 @@ class OnboardingWebviewPresenter(
         onPageLoadError(errorCode = error.primaryError)
     }
 
+    /* found out overload methods has issues, use this method if no hard coding or client secret in the app */
+    @JavascriptInterface
+    fun postMessageEx(idvSessionId: String,  clientId: String, clientSecret: String) {
+        startDdv(idvSessionId, clientId, clientSecret)
+    }
+
     @JavascriptInterface
     fun postMessage(idvSessionId: String) {
-        Log.i(tag, "idv session id from web: $idvSessionId")
         if (Onboarding.clientId.isNullOrEmpty()  || Onboarding.clientSecret.isNullOrEmpty()) {
             Log.i(tag, "No Client id/client secret is set")
             showIDVError()
         } else {
-            Log.i(tag, "Client id ${Onboarding.clientId}, Client secret ${Onboarding.clientSecret}")
-            try {
-                val conf = ConsumerData.Config(
-                    clientId = Onboarding.clientId,
-                    clientSecret = Onboarding.clientSecret
-                )
-                var head: ConsumerData.Headers? = null
-                Onboarding.dynatraceAppId?.let {
-                    head = ConsumerData.Headers(
-                        Onboarding.sourceSystemId,
-                        Onboarding.clientId,
-                        Onboarding.dynatraceAppId,
-                        Onboarding.dynatraceBeaconUrl,
-                        Onboarding.dynatraceUserOptIn
-                    )
-                }
+            startDdv(idvSessionId, Onboarding.clientId, Onboarding.clientSecret)
+        }
+    }
 
-                Ddv.start(
-                    context as Activity,
-                    sessionTokenId = idvSessionId,
-                    headers = head,
-                    config = conf
+    private fun startDdv(idvSessionId: String, clientId: String, clientSecret: String) {
+        Log.i(tag, "Client id $clientId, Client secret $clientSecret sessionid $idvSessionId")
+        try {
+            val conf = ConsumerData.Config(
+                clientId = clientId,
+                clientSecret = clientSecret
+            )
+            var head: ConsumerData.Headers? = null
+            Onboarding.dynatraceAppId?.let {
+                head = ConsumerData.Headers(
+                    Onboarding.sourceSystemId,
+                    Onboarding.clientId,
+                    Onboarding.dynatraceAppId,
+                    Onboarding.dynatraceBeaconUrl,
+                    Onboarding.dynatraceUserOptIn
                 )
-            }catch (e: Exception) {
-                showIDVError()
             }
+
+            Ddv.start(
+                context as Activity,
+                sessionTokenId = idvSessionId,
+                headers = head,
+                config = conf
+            )
+        }catch (e: Exception) {
+            e.printStackTrace()
+            showIDVError()
         }
     }
 

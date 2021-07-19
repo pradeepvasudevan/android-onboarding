@@ -4,7 +4,7 @@
     package="uk.co.santander.santanderuk.onboardtestapp">
 
     <application
-        android:networkSecurityConfig="@xml/network_security_config"
+
         android:name=".OnboardingTestApp"
         android:allowBackup="false"
         tools:replace="allowBackup"
@@ -26,10 +26,17 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="app.sandev.gb.astodev.io"
-                    android:pathPrefix="/magic-link-web/"
-                    android:scheme="https" />
+                <data android:scheme="https"/>
+                <data android:host="@string/onboard_dev_app_deep_link_host" />
+                <data android:host="@string/onboard_pre_app_deep_link_host" />
+                <data android:host="@string/onboard_pro_app_deep_link_host" />
+
+                <data android:host="@string/onboard_bca_dev_app_deep_link_host" />
+                <data android:host="@string/onboard_bca_pre_app_deep_link_host" />
+                <data android:host="@string/onboard_bca_pro_app_deep_link_host" />
+
+                <data android:pathPrefix="@string/onboard_app_deep_link_path_prefix1" />
+                <data android:pathPrefix="@string/onboard_app_deep_link_path_prefix2" />
             </intent-filter>
         </activity>
     </application>

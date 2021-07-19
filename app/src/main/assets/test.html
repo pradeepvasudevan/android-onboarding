@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <style>
+    .parent {
+        display: flex;
+        align-items: center
+    }
+    .child {
+        margin: 0 auto;
+        align-items: center;
+    }
+    input[type=button] {
+      background-color: #4CAF50;
+      color: white;
+      font-size:3em;
+      width: 100%;
+      border-radius: 12px;
+      padding: 16px 100px;
+    }
+    p[id=session] {
+      color: #ff0000;
+      font-size:2.5em;
+      width: 100%;
+    }
+    </style>
+
+    <script type="text/javascript">
+    function showAndroidToast(toast) {
+        astoWebView.showToast(toast);
+    }
+
+    function postMessage(sessionID) {
+        astoWebView.postMessage(sessionID);
+    }
+
+    function postMessageEx(sessionID, clientId, clientSecret) {
+        astoWebView.postMessageEx(sessionID, clientId, clientSecret);
+    }
+
+    function startDDVSession() {
+        astoWebView.postMessage(document.getElementById('sid').value);
+    }
+
+    function updateSession(sessionID) {
+        document.getElementById('session').innerHTML = sessionID;
+    }
+
+    </script>
+</head>
+<body>
+<div class="parent">
+    <div class="child">
+        <p style="text-align:center;width:100%"><h1> on - boarding view/js test</h1></p>
+
+        </br></br></br>
+
+
+        <input type="button" value="Say hello" onClick="showAndroidToast('Hello from the website!');"/>
+
+        </br></br></br>
+        <input type="button" value="Start DDV" onClick="postMessage('fake_session_id')" />
+
+        </br></br></br>
+        <input type="button" value="Start DDV (ClientID)" onClick="postMessageEx('fake_session_id', 'fake_client_id', 'fake_client_sec')" />
+
+        </br></br></br>
+        <input type="text" id="sid"  size="50" style="font-size:20pt;"/>
+
+        </br></br></br>
+        <input type="button" value="Start DDV Session" onClick="startDDVSession()" />
+
+    </div>
+</div>
+</br></br></br>
+<p id="session"></p>
+
+</body>
+</html>
