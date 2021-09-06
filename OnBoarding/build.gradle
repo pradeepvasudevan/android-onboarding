@@ -61,7 +61,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'uk.co.santander.dio:ddv:1.1.0.6' // for testing purpose only 1.1.0.6 no cert pinning
+    implementation 'uk.co.santander.dio:ddv:1.1.2.4' // for testing purpose only 1.1.0.6 no cert pinning
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
     testImplementation 'junit:junit:4.13.2'

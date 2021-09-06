@@ -2,7 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="uk.co.santander.onboarding">
-
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+        </intent>
+    </queries>
     <application
         tools:replace="allowBackup"
         android:allowBackup="true">
@@ -17,5 +23,4 @@
             android:authorities="${applicationId}.OnboardingInitProvider"
             android:name="uk.co.santander.onboarding.OnboardingInitProvider"/>
     </application>
-    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

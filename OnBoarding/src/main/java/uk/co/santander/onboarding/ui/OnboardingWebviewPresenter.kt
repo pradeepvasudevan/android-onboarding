@@ -12,22 +12,55 @@ import uk.co.santander.onboarding.Onboarding
 import uk.co.santander.onboarding.R
 import uk.co.santander.onboarding.base.SanBasePresenter
 
+
 class OnboardingWebviewPresenter(
     override val view: OnboardingWebviewView,
     private val webViewUrl: String?
-) : SanBasePresenter(), DdvListener {
+) : SanBasePresenter() {
     private val tag: String = this@OnboardingWebviewPresenter.javaClass.simpleName
     private var webClientErrorCode = NO_ERROR
 
     override fun start() {
-       Ddv.registerListener(this)
-        webViewUrl?.let {
-            view.showUrl(it)
+        checkNfcLoadUrl()
+    }
+
+    private fun checkNfcLoadUrl() {
+        if (Onboarding.checkNfc) {
+            if (Onboarding.nfcAvailable && !Onboarding.nfcEnabled) {
+                displayEnableNfcPrompt()
+            } else {
+                loadUrl()
+            }
+        } else {
+            loadUrl()
         }
     }
 
-    override fun stop() {
-       Ddv.unregisterListener(this)
+    private fun displayEnableNfcPrompt() {
+        view.showAlertDiaog(
+            ID_NFC_ENABLE_PROMPT,
+            context.getString(R.string.onboarding_lib_enable_nfc),
+            context.getString(R.string.onboarding_lib_enable_nfc_message),
+            listOf(
+                AlertButton(
+                    AlertButton.ACTION.OK,
+                    AlertButton.TYPE.POSITIVE,
+                    context.getString(R.string.onboarding_lib_button_ok)
+                ),
+                AlertButton(
+                    AlertButton.ACTION.CANCEL,
+                    AlertButton.TYPE.NEGATIVE,
+                    context.getString(R.string.onboarding_lib_button_cancel)
+                )
+            )
+        )
+    }
+
+    private fun loadUrl() {
+        webViewUrl?.let {
+            Log.i(tag, "Loading url $it")
+            view.showUrl(it)
+        }
     }
 
     fun onPageLoadStarted(webView: WebView, url: String) {
@@ -52,15 +85,23 @@ class OnboardingWebviewPresenter(
 
     private fun handlePageLoadError() {
 
-        view.showAlertDiaog(ID_PAGE_LOAD_ERROR,
+        view.showAlertDiaog(
+            ID_PAGE_LOAD_ERROR,
             context.getString(R.string.onboarding_lib_we_re_sorry),
             context.getString(R.string.onboarding_lib_std_error_message),
-            listOf(AlertButton(AlertButton.ACTION.OK,
+            listOf(
+                AlertButton(
+                    AlertButton.ACTION.OK,
                     AlertButton.TYPE.POSITIVE,
-                    context.getString(R.string.onboarding_lib_button_ok)),
-                    AlertButton(AlertButton.ACTION.RETRY,
+                    context.getString(R.string.onboarding_lib_button_ok)
+                ),
+                AlertButton(
+                    AlertButton.ACTION.RETRY,
                     AlertButton.TYPE.NEGATIVE,
-                    context.getString(R.string.onboarding_lib_button_retry))))
+                    context.getString(R.string.onboarding_lib_button_retry)
+                )
+            )
+        )
     }
 
     fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
@@ -86,17 +127,53 @@ class OnboardingWebviewPresenter(
 
     /* found out overload methods has issues, use this method if no hard coding or client secret in the app */
     @JavascriptInterface
-    fun postMessageEx(idvSessionId: String,  clientId: String, clientSecret: String) {
+    fun postMessageEx(idvSessionId: String, clientId: String, clientSecret: String) {
         startDdv(idvSessionId, clientId, clientSecret)
     }
 
     @JavascriptInterface
     fun postMessage(idvSessionId: String) {
-        if (Onboarding.clientId.isNullOrEmpty()  || Onboarding.clientSecret.isNullOrEmpty()) {
+        if (Onboarding.clientId.isNullOrEmpty() || Onboarding.clientSecret.isNullOrEmpty()) {
             Log.i(tag, "No Client id/client secret is set")
             showIDVError()
         } else {
             startDdv(idvSessionId, Onboarding.clientId, Onboarding.clientSecret)
+        }
+    }
+
+    @JavascriptInterface
+    fun exit() {
+        (context as Activity).runOnUiThread {
+            view.close()
+        }
+    }
+
+    @JavascriptInterface
+    fun openUrl(url: String) {
+        (context as Activity).runOnUiThread {
+            if (Onboarding.isValidUrl(url)) {
+                view.openInBrowser(url)
+                view.close()
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun openEmailClient() {
+        (context as Activity).runOnUiThread {
+            if (!view.openEmailClient()) {
+                view.showAlertDiaog(ID_PAGE_NO_EMAIL_CLIENT_ERROR,
+                    context.getString(R.string.onboarding_lib_we_re_sorry),
+                    context.getString(R.string.onboarding_lib_no_email_client),
+                    listOf(
+                        AlertButton(
+                            AlertButton.ACTION.OK,
+                            AlertButton.TYPE.POSITIVE,
+                            context.getString(R.string.onboarding_lib_button_ok)
+                        )
+                    )
+                )
+            }
         }
     }
 
@@ -118,35 +195,53 @@ class OnboardingWebviewPresenter(
                 )
             }
 
+            Onboarding.registerDDV()
+
             Ddv.start(
                 context as Activity,
                 sessionTokenId = idvSessionId,
                 headers = head,
                 config = conf
             )
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
             showIDVError()
         }
     }
 
     private fun showIDVError() {
-        view.showAlertDiaog(ID_PAGE_IDV_STD_ERROR,
+        view.showAlertDiaog(
+            ID_PAGE_IDV_STD_ERROR,
             context.getString(R.string.onboarding_lib_we_re_sorry),
             context.getString(R.string.onboarding_lib_std_idv_error_message),
-            listOf(AlertButton(AlertButton.ACTION.OK,
-                AlertButton.TYPE.POSITIVE,
-                context.getString(R.string.onboarding_lib_button_ok))))
+            listOf(
+                AlertButton(
+                    AlertButton.ACTION.OK,
+                    AlertButton.TYPE.POSITIVE,
+                    context.getString(R.string.onboarding_lib_button_ok)
+                )
+            )
+        )
     }
 
     fun onUserAlertAction(id: Int, action: AlertButton.ACTION) {
-        if (id == ID_PAGE_LOAD_ERROR) {
-            if (action == AlertButton.ACTION.RETRY) {
-                webViewUrl?.let {
-                    view.showUrl(it)
+        when (id) {
+            ID_PAGE_LOAD_ERROR -> {
+                if (action == AlertButton.ACTION.RETRY) {
+                    webViewUrl?.let {
+                        view.showUrl(it)
+                    }
+                } else if (action == AlertButton.ACTION.OK) {
+                    view.close()
                 }
-            } else if (action == AlertButton.ACTION.OK) {
-                view.close()
+            }
+            ID_NFC_ENABLE_PROMPT -> {
+                if (action == AlertButton.ACTION.OK) {
+                    view.showNfcSettings()
+                    view.close()
+                } else {
+                    loadUrl()
+                }
             }
         }
     }
@@ -155,11 +250,7 @@ class OnboardingWebviewPresenter(
         const val NO_ERROR = 100
         const val ID_PAGE_LOAD_ERROR = -200
         const val ID_PAGE_IDV_STD_ERROR = -300
-    }
-
-
-    override fun onCompleted() {
-        Log.i(tag, "ID&V completed")
-        Onboarding.onCompleteUrl?.let { view.showUrl(it) }
+        const val ID_PAGE_NO_EMAIL_CLIENT_ERROR = -400
+        const val ID_NFC_ENABLE_PROMPT = 1000
     }
 }

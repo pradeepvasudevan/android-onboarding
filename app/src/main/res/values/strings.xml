@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Onboard Test App</string>
-    <string name="start_onboard_lib">Start Onboarding Lib</string>
+    <string name="start_pca_onboarding">Start PCA Onboarding</string>
+    <string name="start_bca_onboarding">Start BCA Onboarding</string>
     <string name="javascript_interface_test">Javascript Interface Test</string>
 
     <!-- deep/app linking to the app for on-boarding process -->

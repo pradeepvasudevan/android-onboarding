@@ -5,13 +5,14 @@ import android.app.Activity
 import android.content.Context
 import android.net.http.SslCertificate
 import android.net.http.SslError
+import android.webkit.URLUtil
 import android.webkit.WebView
-import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.verify
+import io.mockk.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
 import uk.co.santander.ddv.Ddv
@@ -86,20 +87,6 @@ class OnboardingWebviewPresenterTest {
     }
 
     @Test
-    fun onCompleted() {
-        //given
-        val onCompUrl = "$url${Onboarding.QUERY_PARAM_IDV_COMPLETE}"
-        mockkObject(Onboarding)
-        every { Onboarding.onCompleteUrl } returns  onCompUrl
-
-        // when
-        presenter.onCompleted()
-
-        // then
-        verify(view).showUrl(onCompUrl)
-    }
-
-    @Test
     fun onPostMessageIDVEmptyClientInfo() {
         // given
         mockkObject(Onboarding)
@@ -140,4 +127,37 @@ class OnboardingWebviewPresenterTest {
         //then
         verify(exactly = 1) { Ddv.start(any(), eq("session_id"), any(), eq(conf)) }
     }
+
+    @Test
+    fun exit() {
+        //given
+        Mockito.`when`(view.getContext()).thenReturn(activity)
+        val runOnUiArgCaptor = ArgumentCaptor.forClass(Runnable::class.java)
+
+        //when
+        presenter.exit()
+
+        //then
+        verify(activity).runOnUiThread(runOnUiArgCaptor.capture())
+        runOnUiArgCaptor.value.run()
+        verify(view).close()
+    }
+
+//    @Test
+//    fun openUrl() {
+//        // given
+//        val url = "http://abc.com"
+////        every { view.getContext() } returns activity
+////        mockkObject(Onboarding)
+////        every { Onboarding.isValidUrl(any()) } answers { true }
+////        val viewex = slot<OnboardingWebviewView>()
+////        every { activity.runOnUiThread {
+////             capture(viewex)
+////        } }
+////
+////        presenter.openUrl(url)
+////        verify { viewex.captured.openInBrowser(url) }
+//
+//
+//    }
 }

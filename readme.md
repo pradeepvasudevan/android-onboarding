@@ -50,17 +50,37 @@ usage:
 A javascript bridge to the SDK is required to start the ID&V process
 
 web sdk has to implement a javascript method with the following interface name:
- **astoWebView**
+ **onboardingWebView**
 call the postMessage with an ID&V session id
 eg:
 ```
 if (oS === 'Android') {
-    window.astoWebView?.postMessage(sessionId);
+    window.onboardingWebView?.postMessage(sessionId);
 } else if (oS === 'iOS') {
     //
 }
 ```
 ID&V documentation: [https://idvcore.pages.almuk.santanderuk.corp/developer-guidance-website/api-redoc/redoc.html](https://idvcore.pages.almuk.santanderuk.corp/developer-guidance-website/api-redoc/redoc.html)
+
+### Other Javascript Interface calls
+
+**exit()**
+web sdk can call exit() method to close the native webview from Javascript
+```aidl
+window.onboardingWebView.exit();
+```
+
+**openUrl(url)**
+use this Javascript method to open a URL on an external browser window (also closes the webview)
+```aidl
+window.onboardingWebView.openUrl('http://www.bing.com');
+```
+Note: url needs to be in a valid URL format . eg: needs to include http:// etc
+
+The sdk also allows to set an allowed domains list using the method
+**setWhitelistDomains(domains)**
+where domains is a comma separated string list of domain names
+eg: setWhitelistDomains("www.google.com,bing.com,microsoft.com")
 
 #### Optional Methods
 **ID & V Dynatrace**
@@ -80,6 +100,12 @@ When ID&V journey is completed, onboarding sdk will call the url
 (eg: http://pca.co.uk?idvComplete where pca.co.uk is the onboarding url)
 Can Override the above url using the method setIDVOnCompleteUrl
 `Onboarding.setIDVOnCompleteUrl(onCompleteUrl)`
+
+checkNfcEnabled - call this method with false if NFC enabled check on start up needs to be skipped.
+default:  true
+`Onboarding.checkNfcEnabled(false)`
+
+
 
 #### Onboarding Test App
 The library project source comes with a test app to test the Onboarding SDK in isolation.

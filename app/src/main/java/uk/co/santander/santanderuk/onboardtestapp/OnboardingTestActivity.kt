@@ -23,11 +23,16 @@ class OnboardingTestActivity : AppCompatActivity() {
     }
 
 
-    fun onStartOnboardingLib(view: View) {
+    fun onStartPCAOnboarding(view: View) {
         Onboarding.init(clientId = "36213840-0472-4c14-b674-b576a7d0b959",
             clientSecret = "oL6bX8cT5jN8rV5bE0kB2xG8pD0fU4uX2qK4gM3uC0sE7yO6lN")
         Onboarding.start("https://app-p.dev.sirius.tlzproject.com/") // PCA
-        //Onboarding.start("https://app-b.dev.sirius.tlzproject.com/") // BCA
+    }
+
+    fun onStartBCAOnboarding(view: View) {
+        Onboarding.init(clientId = "36213840-0472-4c14-b674-b576a7d0b959",
+            clientSecret = "oL6bX8cT5jN8rV5bE0kB2xG8pD0fU4uX2qK4gM3uC0sE7yO6lN")
+        Onboarding.start("https://app-b.dev.sirius.tlzproject.com/") // BCA
     }
 
     fun onJavascriptInterfaceTest(view: View) {

@@ -1,27 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp">
 
-    <Button
-        android:id="@+id/startOnboardingLib"
-        android:onClick="onStartOnboardingLib"
-        android:text="@string/start_onboard_lib"
-        android:layout_centerInParent="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/jsInterfaceTest"
-        android:onClick="onJavascriptInterfaceTest"
-        android:text="@string/javascript_interface_test"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/startOnboardingLib"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"/>
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/startPCAOnboardingLib"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onStartPCAOnboarding"
+            android:text="@string/start_pca_onboarding" />
+
+        <Button
+            android:id="@+id/startBCAOnboardingLib"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="onStartBCAOnboarding"
+            android:text="@string/start_bca_onboarding" />
+
+        <Button
+            android:id="@+id/jsInterfaceTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="onJavascriptInterfaceTest"
+            android:text="@string/javascript_interface_test" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Env: Dev"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
 
 </RelativeLayout>

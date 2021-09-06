@@ -28,19 +28,31 @@
 
     <script type="text/javascript">
     function showAndroidToast(toast) {
-        astoWebView.showToast(toast);
+        onboardingWebView.showToast(toast);
     }
 
     function postMessage(sessionID) {
-        astoWebView.postMessage(sessionID);
+        onboardingWebView.postMessage(sessionID);
     }
 
     function postMessageEx(sessionID, clientId, clientSecret) {
-        astoWebView.postMessageEx(sessionID, clientId, clientSecret);
+        onboardingWebView.postMessageEx(sessionID, clientId, clientSecret);
     }
 
     function startDDVSession() {
-        astoWebView.postMessage(document.getElementById('sid').value);
+        onboardingWebView.postMessage(document.getElementById('sid').value);
+    }
+
+    function openUrl(url) {
+        onboardingWebView.openUrl(url);
+    }
+
+    function openEmailClient() {
+        onboardingWebView.openEmailClient();
+    }
+
+    function exit() {
+        onboardingWebView.exit();
     }
 
     function updateSession(sessionID) {
@@ -54,26 +66,35 @@
     <div class="child">
         <p style="text-align:center;width:100%"><h1> on - boarding view/js test</h1></p>
 
-        </br></br></br>
+        </br></br>
 
 
         <input type="button" value="Say hello" onClick="showAndroidToast('Hello from the website!');"/>
 
-        </br></br></br>
+        </br></br>
         <input type="button" value="Start DDV" onClick="postMessage('fake_session_id')" />
 
-        </br></br></br>
+        </br></br>
         <input type="button" value="Start DDV (ClientID)" onClick="postMessageEx('fake_session_id', 'fake_client_id', 'fake_client_sec')" />
 
-        </br></br></br>
+        </br></br>
         <input type="text" id="sid"  size="50" style="font-size:20pt;"/>
 
-        </br></br></br>
+        </br></br>
         <input type="button" value="Start DDV Session" onClick="startDDVSession()" />
 
+        </br></br>
+        <input type="button" value="Open Url - bing" onClick="openUrl('http://www.bing.com')" />
+
+        </br></br>
+        <input type="button" value="Open Email Client" onClick="openEmailClient()" />
+
+        </br></br>
+        <input type="button" value="Exit" onClick="exit()" />
+        
     </div>
 </div>
-</br></br></br>
+</br></br>
 <p id="session"></p>
 
 </body>

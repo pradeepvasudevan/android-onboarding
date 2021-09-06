@@ -9,7 +9,7 @@ buildscript {
         compileSdk = 30
 
         versionMajor = 1
-        versionMinor = 9
+        versionMinor = 15
         versionPatch = 0
 
         buildNumber = System.getenv("BUILD_NUMBER") as Integer ?: 0
@@ -37,6 +37,7 @@ buildscript {
         // in the individual module build.gradle files
 
     }
+
 
 }
 

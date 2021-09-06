@@ -3,11 +3,15 @@ package uk.co.santander.onboarding.ui
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
 import android.os.Message
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +22,7 @@ import uk.co.santander.onboarding.BuildConfig
 import uk.co.santander.onboarding.R
 import uk.co.santander.onboarding.base.SanBaseActivity
 import uk.co.santander.onboarding.base.SanWebView
+
 
 class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
     OnboardingWebviewView {
@@ -40,6 +45,13 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
     override fun setupDependencies() {
         val url = intent.getStringExtra(OnboardingWebviewView.EXTRA_WEBVIEW_URL)
         presenter = OnboardingWebviewPresenter(this, url)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val url = intent.getStringExtra(OnboardingWebviewView.EXTRA_WEBVIEW_URL)
+        presenter = OnboardingWebviewPresenter(this, url)
+        presenter.onStart()
     }
 
     @Suppress("DEPRECATION")
@@ -247,6 +259,47 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
         webContentView.clearFormData()
         webContentView.clearHistory()
         webContentView.clearCache(true)
+    }
+
+    override fun showNfcSettings() {
+        val intent = Intent(Settings.ACTION_NFC_SETTINGS)
+        startActivity(intent)
+    }
+
+    override fun openInBrowser(url:String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(intent)
+    }
+
+    override fun openEmailClient(): Boolean {
+        return try {
+            val emailIntent = getEmailClientIntents().toTypedArray()
+            if (emailIntent.isNotEmpty()) {
+                val chooserIntent = Intent.createChooser(Intent(), getString(R.string.onboarding_lib_open_email))
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, emailIntent)
+                startActivity(chooserIntent)
+                true
+            } else {
+                false
+            }
+        } catch (e: ActivityNotFoundException) {
+            false
+        }
+    }
+
+    private fun getEmailClientIntents() : List<Intent> {
+        val emailClientLauncherIntents = mutableListOf<Intent>()
+        val emailAppIntent = Intent(Intent.ACTION_VIEW)
+        emailAppIntent.data = Uri.parse("mailto:")
+        val emailClients = packageManager.queryIntentActivities(emailAppIntent, 0)
+        for (resolveInfo in emailClients) {
+            val packageName = resolveInfo.activityInfo.packageName
+            val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+            if (launchIntent != null) {
+                emailClientLauncherIntents.add(launchIntent)
+            }
+        }
+        return emailClientLauncherIntents
     }
 
     override fun clearAll() {
