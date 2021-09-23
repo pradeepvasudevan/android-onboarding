@@ -40,6 +40,7 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
         setupWebView()
         setupChromeClient()
         setupDownloadListener()
+        presenter.onCreate()
     }
 
     override fun setupDependencies() {
@@ -51,7 +52,7 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
         super.onNewIntent(intent)
         val url = intent.getStringExtra(OnboardingWebviewView.EXTRA_WEBVIEW_URL)
         presenter = OnboardingWebviewPresenter(this, url)
-        presenter.onStart()
+        presenter.onCreate()
     }
 
     @Suppress("DEPRECATION")

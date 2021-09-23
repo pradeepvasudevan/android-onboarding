@@ -6,7 +6,6 @@ import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import uk.co.santander.ddv.Ddv
-import uk.co.santander.ddv.DdvListener
 import uk.co.santander.ddv.common.utils.otherconfigs.ConsumerData
 import uk.co.santander.onboarding.Onboarding
 import uk.co.santander.onboarding.R
@@ -20,8 +19,12 @@ class OnboardingWebviewPresenter(
     private val tag: String = this@OnboardingWebviewPresenter.javaClass.simpleName
     private var webClientErrorCode = NO_ERROR
 
-    override fun start() {
+    override fun create() {
+        super.create()
         checkNfcLoadUrl()
+    }
+    override fun start() {
+        //checkNfcLoadUrl()
     }
 
     private fun checkNfcLoadUrl() {
@@ -127,8 +130,9 @@ class OnboardingWebviewPresenter(
 
     /* found out overload methods has issues, use this method if no hard coding or client secret in the app */
     @JavascriptInterface
-    fun postMessageEx(idvSessionId: String, clientId: String, clientSecret: String) {
-        startDdv(idvSessionId, clientId, clientSecret)
+    fun postMessageEx(idvSessionId: String, clientId: String, clientSecret: String, env: String) {
+        Onboarding.init(clientId, clientSecret, env)
+        startDdv(idvSessionId)
     }
 
     @JavascriptInterface
@@ -137,7 +141,7 @@ class OnboardingWebviewPresenter(
             Log.i(tag, "No Client id/client secret is set")
             showIDVError()
         } else {
-            startDdv(idvSessionId, Onboarding.clientId, Onboarding.clientSecret)
+            startDdv(idvSessionId)
         }
     }
 
@@ -177,21 +181,30 @@ class OnboardingWebviewPresenter(
         }
     }
 
-    private fun startDdv(idvSessionId: String, clientId: String, clientSecret: String) {
-        Log.i(tag, "Client id $clientId, Client secret $clientSecret sessionid $idvSessionId")
+    private fun startDdv(idvSessionId: String) {
+        Log.i(tag, "starting ddv, sessionid $idvSessionId")
         try {
             val conf = ConsumerData.Config(
-                clientId = clientId,
-                clientSecret = clientSecret
+                clientId = Onboarding.clientId,
+                clientSecret = Onboarding.clientSecret,
+                environment = Onboarding.ddvEnvironment,
+                listOfCertificateSHA256Keys = Onboarding.ddvCertKeys,
+                listOfCertificateReferences = Onboarding.certResourceIds
             )
-            var head: ConsumerData.Headers? = null
+            var gassCredentials: ConsumerData.GassCredentials? = null
+            var dynatraceConfig: ConsumerData.DynatraceConfig? = null
             Onboarding.dynatraceAppId?.let {
-                head = ConsumerData.Headers(
-                    Onboarding.sourceSystemId,
-                    Onboarding.clientId,
-                    Onboarding.dynatraceAppId,
-                    Onboarding.dynatraceBeaconUrl,
-                    Onboarding.dynatraceUserOptIn
+                dynatraceConfig = ConsumerData.DynatraceConfig(
+                    dynatraceAppId =  Onboarding.dynatraceAppId,
+                    dynatraceBeaconUrl =  Onboarding.dynatraceBeaconUrl,
+                    dynatraceUserOptIn =  Onboarding.dynatraceUserOptIn
+                )
+            }
+
+            Onboarding.sourceSystemId?.let {
+                gassCredentials = ConsumerData.GassCredentials(
+                    userId = Onboarding.userId,
+                    sourceSystemId = Onboarding.sourceSystemId
                 )
             }
 
@@ -200,7 +213,8 @@ class OnboardingWebviewPresenter(
             Ddv.start(
                 context as Activity,
                 sessionTokenId = idvSessionId,
-                headers = head,
+                dynatraceConfig = dynatraceConfig,
+                gassCredentials = gassCredentials,
                 config = conf
             )
         } catch (e: Exception) {

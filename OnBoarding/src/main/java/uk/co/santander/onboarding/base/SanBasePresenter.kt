@@ -14,7 +14,7 @@ abstract class SanBasePresenter {
         create()
     }
 
-    protected fun create() {
+    protected open fun create() {
     }
 
     fun onStart(){

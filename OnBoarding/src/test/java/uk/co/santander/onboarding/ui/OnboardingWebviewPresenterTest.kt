@@ -17,6 +17,7 @@ import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
 import uk.co.santander.ddv.Ddv
 import uk.co.santander.ddv.common.utils.otherconfigs.ConsumerData
+import uk.co.santander.ddv.common.utils.otherconfigs.DdvEnvironment
 import uk.co.santander.onboarding.Onboarding
 import uk.co.santander.onboarding.R
 
@@ -110,13 +111,17 @@ class OnboardingWebviewPresenterTest {
         // given
         mockkObject(Onboarding)
         mockkObject(Ddv)
-        every { Ddv.start(any(), any(), any(), any()) } answers { Unit }
+        every { Ddv.start(any(), any(), any(), any(), any()) } answers { Unit }
         every { Onboarding.clientId } returns "client_id"
         every { Onboarding.clientSecret } returns  "client_secret"
+        every { Onboarding.env } returns "TEST"
 
         val conf = ConsumerData.Config(
             clientId = Onboarding.clientId,
-            clientSecret = Onboarding.clientSecret
+            clientSecret = Onboarding.clientSecret,
+            listOfCertificateReferences = listOf(),
+            listOfCertificateSHA256Keys = listOf(),
+            environment = DdvEnvironment.TEST
         )
 
         `when`(view.getContext()).thenReturn(activity)
@@ -125,7 +130,7 @@ class OnboardingWebviewPresenterTest {
         presenter.postMessage("session_id")
 
         //then
-        verify(exactly = 1) { Ddv.start(any(), eq("session_id"), any(), eq(conf)) }
+        verify(exactly = 1) { Ddv.start(any(), eq("session_id"), any(), any(), eq(conf)) }
     }
 
     @Test

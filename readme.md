@@ -30,14 +30,41 @@ Sync the project to make sure the the onboarding library can be included in the 
 ### Usage
 
 **Initialisation**
-init (<ID & V Client ID >, <ID &V Client secret>)
-Init function sets the client id and secret for the ID&V verfication library
+init (<ID & V Client ID >, <ID &V Client secret>, <Environment>)
+Init function sets the client id and secret for the ID&V verification library
+Init also takes a string value for the environment. acceptable values are "TEST" or "PROD"
+where "PROD" is for the live environment.
 
 Usage:
 `        Onboarding.init(
             ID_VERIFICATION_CLIENT_ID,
-            ID_VERIFICATION_CLIENT_SECRET
+            ID_VERIFICATION_CLIENT_SECRET,
+            "TEST"
         )`
+        
+There are two methods introduced to set the proxy certificates for the DDV library to use to test
+the application in our internal network. Call these method with proxy certificates
+
+**Certificate Keys**
+setDdvCertificateKeys(<Array of Strings>)
+Set the key hashes. Empty array for the production version
+
+these are the values given by the ID&V team for our internal network
+`
+sha256/polcTnx1xyuZGP8FimtR+MEQPaBM+RZaJ4uNR/79A6Q=",
+"sha256/8kGWrpQHhmc0jwLo43RYo6bmqtHgsNxhARjM5yFCe/w=",
+"sha256/8BWfbvnT80Bs3xyNRpaDNcwOBESRgwwORGZt9yP2ow4=",
+"sha256/ixm49zzGIzvNWD/lqCWaIcYRSFfs24VRBX1NahyReAA=",
+"sha256/V873dynHqhybr+XZOQ5QIzJN9um5pYiD2tTNFnT35YU="
+`
+
+**Proxy Certificates**
+setDdvCertificateResources(<Array of integer resource ids>)
+
+ID&V team requires Android resource IDs of certificates in the raw folder of the resource
+
+eg:
+setDdvCertificateResources(arrayOf(R.raw.santander_ca_root, R.raw.diassl))
 
 **Start**
 start(<url to navitate>)
@@ -84,14 +111,21 @@ eg: setWhitelistDomains("www.google.com,bing.com,microsoft.com")
 
 #### Optional Methods
 **ID & V Dynatrace**
-Call the **setIDVDynatraceParams** method If the Dynatrace logs are required from the ID&V library
+Call the **setDdVDynatraceParams** method If the Dynatrace logs are required from the ID&V library
 ```
-Onboarding.setDynatraceParams(
-            sourceSystemId,
-            userId,
+Onboarding.setDdVDynatraceParams(
             dynatraceAppId,
             dynatraceBeaconUrl,
             dynatraceUserOptIn
+        )
+```
+
+**ID & V Gass**
+Call the **setIDVGassParams** method If the Gass logs are required from the ID&V library
+```
+Onboarding.setIDVGassParams(
+            sourceSystemId,
+            userId
         )
 ```
 

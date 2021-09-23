@@ -9,7 +9,7 @@ buildscript {
         compileSdk = 30
 
         versionMajor = 1
-        versionMinor = 15
+        versionMinor = 3
         versionPatch = 0
 
         buildNumber = System.getenv("BUILD_NUMBER") as Integer ?: 0

@@ -5,10 +5,11 @@ import android.content.Intent
 import android.nfc.NfcManager
 import android.util.Log
 import android.webkit.URLUtil
+import androidx.annotation.RawRes
 import org.jetbrains.annotations.NotNull
 import uk.co.santander.ddv.Ddv
 import uk.co.santander.ddv.DdvListener
-import uk.co.santander.ddv.data.oauth.repo.DDV_BACKEND_URL_PREFIX
+import uk.co.santander.ddv.common.utils.otherconfigs.DdvEnvironment
 import uk.co.santander.onboarding.ui.OnboardingWebviewActivity
 import uk.co.santander.onboarding.ui.OnboardingWebviewView
 import java.net.URL
@@ -21,26 +22,49 @@ class Onboarding {
             startActivity(nfcUrl)
         }
 
-        fun init(clientId: String, clientSecret: String) {
+        /**
+         * env (accepted values = TEST or PROD)
+         */
+        fun init(clientId: String, clientSecret: String, environment: String) {
             this.clientId = clientId
             this.clientSecret = clientSecret
+            this.ddvEnvironment =
+                if (DDV_SANDBOX == environment) DdvEnvironment.TEST else DdvEnvironment.PROD
+        }
+
+        /**
+         * not null, pass an empty list in the production env
+         */
+        fun setDdvCertificateKeys(ddvCertKeys: Array<String>) {
+            this.ddvCertKeys = ddvCertKeys.toList()
+        }
+
+        /**
+         * not null, pass an empty list in the production env
+         */
+        fun setDdvCertificateResources(@RawRes certResourceIds: Array<Int>) {
+            this.certResourceIds = certResourceIds.toList()
         }
 
         /**
          * optional, set dynatrace params for ID&V library to use
          */
-        fun setIDVDynatraceParams(
-            sourceSystemId: String? = null,
-            userId: String? = null,
+        fun setDdVDynatraceParams(
             dynatraceAppId: String? = null,
             dynatraceBeaconUrl: String? = null,
             dynatraceUserOptIn: Boolean = false
         ) {
-            this.sourceSystemId = sourceSystemId
-            this.userId = userId
             this.dynatraceAppId = dynatraceAppId
             this.dynatraceBeaconUrl = dynatraceBeaconUrl
             this.dynatraceUserOptIn = dynatraceUserOptIn
+        }
+
+        fun setIDVGassParams(
+            sourceSystemId: String? = null,
+            userId: String? = null
+        ) {
+            this.sourceSystemId = Companion.sourceSystemId
+            this.userId = Companion.userId
         }
 
         /**
@@ -119,12 +143,21 @@ class Onboarding {
                 Log.i(this::class.java.simpleName, "ID&V completed")
                 Ddv.unregisterListener(this)
                 onCompleteUrl?.let {
-                    Log.i(this::class.java.simpleName, "Finishing off, Loading url:  $onCompleteUrl")
+                    Log.i(
+                        this::class.java.simpleName,
+                        "Finishing off, Loading url:  $onCompleteUrl"
+                    )
                     startActivity(onCompleteUrl)
                 }
             }
         }
 
+        var ddvCertKeys: List<String> = emptyList()
+            private set
+        var certResourceIds: List<Int> = emptyList()
+            private set
+        lateinit var ddvEnvironment: DdvEnvironment
+            private set
         lateinit var clientId: String
             private set
         lateinit var clientSecret: String
@@ -147,9 +180,11 @@ class Onboarding {
         private var validDomains: List<String> = listOf()
         const val QUERY_PARAM_IDV_COMPLETE = "?idvComplete"
         const val NFC_ENABLED = "nfcEnabled"
+        const val DDV_SANDBOX = "TEST"
 
         private fun startActivity(url: String?) {
-            val intent = Intent(OnboardingInitProvider.appContext, OnboardingWebviewActivity::class.java)
+            val intent =
+                Intent(OnboardingInitProvider.appContext, OnboardingWebviewActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK;
             intent.putExtra(OnboardingWebviewView.EXTRA_WEBVIEW_URL, url)
             OnboardingInitProvider.appContext.startActivity(intent)
