@@ -329,6 +329,33 @@ class OnboardingWebviewActivity : SanBaseActivity<OnboardingWebviewPresenter>(),
         setVisibility(View.GONE, webContentView)
     }
 
+    override fun canGoBackToPreviousWebPage(): Boolean {
+        return webContentView.canGoBack()
+    }
+
+    override fun goBackToPreviousWebPage() {
+        webContentView.goBack()
+    }
+
+    override fun getPreviousLink(): String {
+        val webBackForwardList = webContentView.copyBackForwardList()
+        return webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex - 1).url
+    }
+
+    override fun getCurrentLink(): String {
+        return webContentView.url.orEmpty()
+    }
+
+    override fun onBackPressed() {
+        presenter.onBackPressed()
+    }
+
+    override fun processExternalLink(url: String) {
+        val target = Intent(Intent.ACTION_VIEW)
+        target.data = Uri.parse(url)
+        startActivity(target)
+    }
+
     override fun showAlertDiaog(
         id: Int,
         title: String,

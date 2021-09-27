@@ -10,6 +10,7 @@ import uk.co.santander.ddv.common.utils.otherconfigs.ConsumerData
 import uk.co.santander.onboarding.Onboarding
 import uk.co.santander.onboarding.R
 import uk.co.santander.onboarding.base.SanBasePresenter
+import uk.co.santander.onboarding.base.WhitelistDelegate
 
 
 class OnboardingWebviewPresenter(
@@ -108,6 +109,11 @@ class OnboardingWebviewPresenter(
     }
 
     fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
+        val requestedUrlHost = WhitelistDelegate.getHost(url).orEmpty()
+        if (requestedUrlHost.endsWith(SANTANDER_DOMAIN)) {
+            view.processExternalLink(url)
+            return true
+        }
         return false
     }
 
@@ -117,11 +123,13 @@ class OnboardingWebviewPresenter(
     }
 
     fun useExistingWebViewWindow(webView: WebView, url: String) {
-
+        if (!shouldOverrideUrlLoading(webView, url)) {
+            view.showUrl(url)
+        }
     }
 
     fun handleExternalLink(url: String, mimeType: String) {
-
+        view.processExternalLink(url)
     }
 
     fun onSslError(error: SslError) {
@@ -242,9 +250,7 @@ class OnboardingWebviewPresenter(
         when (id) {
             ID_PAGE_LOAD_ERROR -> {
                 if (action == AlertButton.ACTION.RETRY) {
-                    webViewUrl?.let {
-                        view.showUrl(it)
-                    }
+                    loadUrl()
                 } else if (action == AlertButton.ACTION.OK) {
                     view.close()
                 }
@@ -260,11 +266,21 @@ class OnboardingWebviewPresenter(
         }
     }
 
+    fun onBackPressed() {
+        view.hideProgress()
+        if (!view.canGoBackToPreviousWebPage()) {
+            view.close()
+            return
+        }
+        view.goBackToPreviousWebPage()
+    }
+
     companion object {
         const val NO_ERROR = 100
         const val ID_PAGE_LOAD_ERROR = -200
         const val ID_PAGE_IDV_STD_ERROR = -300
         const val ID_PAGE_NO_EMAIL_CLIENT_ERROR = -400
         const val ID_NFC_ENABLE_PROMPT = 1000
+        const val SANTANDER_DOMAIN = "santander.co.uk"
     }
 }

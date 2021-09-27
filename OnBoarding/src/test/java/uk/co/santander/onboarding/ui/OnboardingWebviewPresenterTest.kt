@@ -8,10 +8,12 @@ import android.net.http.SslError
 import android.webkit.URLUtil
 import android.webkit.WebView
 import io.mockk.*
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
@@ -20,6 +22,7 @@ import uk.co.santander.ddv.common.utils.otherconfigs.ConsumerData
 import uk.co.santander.ddv.common.utils.otherconfigs.DdvEnvironment
 import uk.co.santander.onboarding.Onboarding
 import uk.co.santander.onboarding.R
+import uk.co.santander.onboarding.base.WhitelistDelegate
 
 @RunWith(MockitoJUnitRunner::class)
 class OnboardingWebviewPresenterTest {
@@ -114,7 +117,7 @@ class OnboardingWebviewPresenterTest {
         every { Ddv.start(any(), any(), any(), any(), any()) } answers { Unit }
         every { Onboarding.clientId } returns "client_id"
         every { Onboarding.clientSecret } returns  "client_secret"
-        every { Onboarding.env } returns "TEST"
+        every { Onboarding.ddvEnvironment } returns DdvEnvironment.TEST
 
         val conf = ConsumerData.Config(
             clientId = Onboarding.clientId,
@@ -135,17 +138,76 @@ class OnboardingWebviewPresenterTest {
 
     @Test
     fun exit() {
-        //given
+        // given
         Mockito.`when`(view.getContext()).thenReturn(activity)
         val runOnUiArgCaptor = ArgumentCaptor.forClass(Runnable::class.java)
 
-        //when
+        // when
         presenter.exit()
 
-        //then
+        // then
         verify(activity).runOnUiThread(runOnUiArgCaptor.capture())
         runOnUiArgCaptor.value.run()
         verify(view).close()
+    }
+
+    @Test
+    fun onBackPressedGoBackToPrevPage() {
+        // given
+        `when`(view.canGoBackToPreviousWebPage()).thenReturn(true)
+
+        // then
+        presenter.onBackPressed()
+
+        // then
+        verify(view).goBackToPreviousWebPage()
+    }
+
+    @Test
+    fun onBackPressedClosePage() {
+        // given
+        `when`(view.canGoBackToPreviousWebPage()).thenReturn(false)
+
+        // then
+        presenter.onBackPressed()
+
+        // then
+        verify(view).close()
+    }
+
+    @Test
+    fun shouldOverrideUrlLoadingSantanderDomain() {
+        // given
+        mockkObject(WhitelistDelegate)
+        val url = "https://www.santander.co.uk/test"
+        every { WhitelistDelegate.getHost(url) } answers {"santander.co.uk"}
+
+        // then
+        presenter.shouldOverrideUrlLoading(webView, url)
+
+        //then
+        verify(view).processExternalLink(url)
+    }
+
+    @Test
+    fun shouldOverrideUrlLoading() {
+        // given
+        mockkObject(WhitelistDelegate)
+        val url = "https://www.abc.co.uk/test"
+        every { WhitelistDelegate.getHost(url) } answers {"abc.co.uk"}
+
+
+        // then
+        val ret = presenter.shouldOverrideUrlLoading(webView, url)
+
+        //then
+        assert(!ret)
+    }
+
+    //un mock all
+    @After
+    fun cleanUp() {
+        unmockkAll()
     }
 
 //    @Test
