@@ -11,7 +11,8 @@
     </queries>
     <application
         tools:replace="allowBackup"
-        android:allowBackup="true">
+        android:allowBackup="true"
+        android:networkSecurityConfig="@xml/network_security_config">
         <activity android:name=".ui.OnboardingWebviewActivity"
             android:launchMode="singleTask" android:screenOrientation="portrait">
             <intent-filter>

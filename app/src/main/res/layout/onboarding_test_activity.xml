@@ -10,10 +10,32 @@
         android:layout_centerInParent="true"
         android:orientation="vertical">
 
+        <EditText
+                android:id="@+id/startUrlOnboardingUrl"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:inputType="textUri"
+                android:hint="URL"/>
+
+        <Button
+                android:id="@+id/startUrlOnboardingLib"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onStartUrlOnboarding"
+                android:text="@string/start_url" />
+
+        <TableRow
+                android:id="@+id/hr"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorPrimaryDark"></TableRow>
+
         <Button
             android:id="@+id/startPCAOnboardingLib"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:onClick="onStartPCAOnboarding"
             android:text="@string/start_pca_onboarding" />
 

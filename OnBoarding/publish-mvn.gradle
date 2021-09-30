@@ -52,8 +52,8 @@ afterEvaluate {
                 //url = "file://${buildDir}/repo"
                 url "https://nexus.almuk.santanderuk.corp/repository/firefly-mobility/android/onboarding"
                 credentials {
-                    username "$NEXUS_USERNAME"
-                    password "$NEXUS_PASSWORD"
+                    username System.getenv('NEXUS_USERNAME')
+                    password System.getenv('NEXUS_PASSWORD')
                 }
             }
         }
