@@ -50,13 +50,7 @@ setDdvCertificateKeys(<Array of Strings>)
 Set the key hashes. Empty array for the production version
 
 these are the values given by the ID&V team for our internal network
-`
-sha256/polcTnx1xyuZGP8FimtR+MEQPaBM+RZaJ4uNR/79A6Q=",
-"sha256/8kGWrpQHhmc0jwLo43RYo6bmqtHgsNxhARjM5yFCe/w=",
-"sha256/8BWfbvnT80Bs3xyNRpaDNcwOBESRgwwORGZt9yP2ow4=",
-"sha256/ixm49zzGIzvNWD/lqCWaIcYRSFfs24VRBX1NahyReAA=",
-"sha256/V873dynHqhybr+XZOQ5QIzJN9um5pYiD2tTNFnT35YU="
-`
+{request ID&V team for these keys}
 
 **Proxy Certificates**
 setDdvCertificateResources(<Array of integer resource ids>)
