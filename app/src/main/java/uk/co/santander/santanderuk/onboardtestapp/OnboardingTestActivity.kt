@@ -43,7 +43,13 @@ class OnboardingTestActivity : AppCompatActivity() {
     fun onStartUrlOnboarding(view: View) {
         setupKeys()
 
-        var url = findViewById<EditText>(R.id.startUrlOnboardingUrl).text.toString();
+        val onboardingUrlView = findViewById<EditText>(R.id.startUrlOnboardingUrl)
+        var url = onboardingUrlView.text.toString();
+
+        if (url.isBlank()) {
+            onboardingUrlView.error = "URL blank"
+            return
+        }
 
         if (!url.startsWith("http://") && !url.startsWith("https://")){
             url = "http://$url"
